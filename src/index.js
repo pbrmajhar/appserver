@@ -13,14 +13,6 @@ app.use(bodyParser.json())
 app.use('/api/user', userRouters)
 mongoose.connect(process.env.DBHOST)
 
-const bcrypt = require('bcrypt')
-const securePass = async () => {
-    const pass = 'admin'
-    const newPass = await bcrypt.hash(pass, 8)
-    const ifMatch = await bcrypt.compare(pass, newPass)
-    console.log(ifMatch)
-} 
-securePass()
 
 
 app.listen(PORT, () => {

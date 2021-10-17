@@ -12,6 +12,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-},{timestamps: true})
+}, { timestamps: true })
+
+userSchema.pre('save', async function (next) {
+    const user = this
+    console.log(user)
+    next()
+})
 
 module.exports = mongoose.model('User', userSchema)

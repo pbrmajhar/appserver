@@ -10,6 +10,8 @@ const PORT = process.env.PORT || 4000
 
 app.use(cors())
 app.use(bodyParser.json())
+
+
 app.use('/api/user', userRouters)
 mongoose.connect(process.env.DBHOST)
 

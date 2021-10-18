@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const User = require('../models/user.model')
 const jwt = require('jsonwebtoken')
+const auth = require('../middleware/auth.middleware')
 
 
 // Singup user
@@ -53,6 +54,36 @@ router.patch('/user/:id', async (req, res) => {
         res.status(400).send({ message: 'Something went wrong', error: error.message })
     }
 
+})
+
+router.get('/user', auth, (req, res) => {
+   
+    res.send(req.user)
+})
+
+// single device logout
+router.post('/user/logout', auth, async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.user.save()
+
+        res.send({message: 'you are logged out'})
+    } catch (error) {
+        res.status(500).send({error: 'Unable to logout'})
+    }
+})
+
+// all logout
+router.post('/user/logout/all', auth, async (req, res) => {
+    try {
+        req.user.tokens = []
+        await req.user.save()
+        res.send({message: 'Logged out from all device'})
+    } catch (error) {
+        res.status(500).send({error: 'Unable to logout'})
+    }
 })
 
 module.exports = router

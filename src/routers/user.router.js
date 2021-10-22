@@ -10,7 +10,7 @@ router.post('/singup', async (req, res) => {
         const { fullname, email, password } = req.body
         const user = await new User({ fullname, email, password }).save()
         const token = await user.generateAuthToken()
-        res.send({user, token})
+        res.send({ user, token })
     } catch (error) {
         res.status(400).send(error)
     }
@@ -22,9 +22,16 @@ router.post('/login', async (req, res) => {
         const { email, password } = req.body
         const user = await User.findByCredentials(email, password)
         const token = await user.generateAuthToken()
+        // const userProfile = await user.getPublicProfile()
         res.send({ user, token })
     } catch (error) {
         res.status(404).send({ error: error.message })
+    }
+})
+
+router.post('/checkuser', auth, async (req, res) => {
+    if (req.user) {
+        res.send(req.user)
     }
 })
 
@@ -57,7 +64,7 @@ router.patch('/user/:id', async (req, res) => {
 })
 
 router.get('/user', auth, (req, res) => {
-   
+
     res.send(req.user)
 })
 
@@ -69,9 +76,9 @@ router.post('/user/logout', auth, async (req, res) => {
         })
         await req.user.save()
 
-        res.send({message: 'you are logged out'})
+        res.send({ message: 'you are logged out' })
     } catch (error) {
-        res.status(500).send({error: 'Unable to logout'})
+        res.status(500).send({ error: 'Unable to logout' })
     }
 })
 
@@ -80,9 +87,9 @@ router.post('/user/logout/all', auth, async (req, res) => {
     try {
         req.user.tokens = []
         await req.user.save()
-        res.send({message: 'Logged out from all device'})
+        res.send({ message: 'Logged out from all device' })
     } catch (error) {
-        res.status(500).send({error: 'Unable to logout'})
+        res.status(500).send({ error: 'Unable to logout' })
     }
 })
 
